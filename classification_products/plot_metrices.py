@@ -27,10 +27,10 @@ def read_metrics(csv_path:Path):
 
     # 嘗試 UTF-8-SIG 與 UTF-8 編碼
     try:
-        f=open(csv_path,"r",encodinh="utf-8-sig")
+        f=open(csv_path,"r",encoding="utf-8-sig")
         first_try = f
     except:
-        f=open(csv_path,"r",encodinh="utf-8")
+        f=open(csv_path,"r",encoding="utf-8")
         first_try = f
     
     with first_try as ff:
@@ -111,8 +111,8 @@ def main():
 
     # ----loss 圖------
     ax1 = fig.add_subplot(1,2,1)
-    ax1.plot(epochs,data["train_loss"],label="train_loss",lineWidth=2)
-    ax1.plot(epochs,data["val_loss"],label="val_loss",lineWideh=2)
+    ax1.plot(epochs,data["train_loss"],label="train_loss",linewidth=2)
+    ax1.plot(epochs,data["val_loss"],label="val_loss",linewidth=2)
     ax1.set_xlabel("Epoch")
     ax1.set_ylabel("Loss")
     ax1.set_title("Loss (train vs valicate)")
@@ -132,6 +132,23 @@ def main():
         annotation_clip=False #即使箭頭在圖邊界外，也強制顯示註解，不被裁掉。
     )
     ax1.margins(x=0.05,y=0.10) #調整圖表邊界留白（margin）的設定指令
+
+    # --- Accuracy 圖 ---
+    ax2 = fig.add_subplot(1,2,2)
+    ax2.plot(epochs,data["train_acc"],label="train_acc",linewidth=2)
+    ax2.plot(epochs,data["val_acc"],label="val_acc",linewidth=2)
+    ax2.set_xlabel("Epoch")
+    ax2.set_ylabel("Accuracy") 
+    ax2.set_title("Accuracy (train vs valicate)")
+    ax2.grid(True,linestyle="--",alpha=0.4)
+    ax2.legend(loc="best") 
+
+
+    fig.suptitle("Training Metrics",fontsize=14,y=0.98)  #y=0.98 是為了把標題往上微調一點
+    fig.tight_layout() #自動調整子圖（subplot）之間的間距與邊界，避免文字、標籤、圖例重疊
+    fig.savefig(OUT_PATH,dpi=150)
+    print(f"[ok]圖片以輸出:{OUT_PATH}")
+
 #[Step 5] 主執行點
 if __name__ == "__main__":
     main()

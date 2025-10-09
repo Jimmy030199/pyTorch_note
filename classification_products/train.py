@@ -31,8 +31,10 @@ def main():
 
     # [Step 2] — 資料載入與前處理
     # 目的：下載並轉換 Fashion-MNIST 資料集，拆分為訓練集與驗證集。
+    # 最佳實踐是：訓練和測試都用相同 mean/std
+    # 前處理
     tfm = transforms.Compose([transforms.ToTensor(),
-                        transforms.Normalize((0.5,),(0.5,))])
+                        transforms.Normalize((0.2861,),(0.3530,))])
     # print('tfm',tfm)
     full_train = datasets.FashionMNIST(
         root=args.data_dir,
@@ -101,7 +103,7 @@ def main():
             labels=labels.to(device).long() # CrossEntropyLoss 需要 int64
             
             # Forward
-            logits=model(images) # 模型輸出 [batch, 10] 輸出的「原始分數」
+            logits=model(images) # 模型輸出 [batch, 10] 輸出的「原始分數」logits 是模型最後一層（通常是全連接層 Linear）的原始輸出值，還 沒經過 softmax 或 sigmoid 等歸一化處理
             # 注意：CrossEntropyLoss 的預設行為是 回傳這個 batch 的平均 loss（不是總和）
             loss=criterion(logits,labels) # 計算損失 (未 softmax) 
             
@@ -157,10 +159,10 @@ def main():
         
         # 顯示目前 epoch 的結果
         dt = time.time() - t0
-        print(f"[Epoch {epoch:02d}]"
-              f"train_loss={train_loss:.4f} val_loss={val_loss:.4f}"
-              f"train_acc={train_acc:.4f} val_acc={val_acc:.4f}"
-              f"({dt:.1f}s)"
+        print(f"[Epoch {epoch:02d}] "
+              f"train_loss={train_loss:.4f} val_loss={val_loss:.4f} "
+              f"train_acc={train_acc:.4f} val_acc={val_acc:.4f} "
+              f"({dt:.1f}s) "
               )
         # 若 validation loss 下降，則儲存最好的模型
         if val_loss < best_val_loss:
