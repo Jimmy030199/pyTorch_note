@@ -33,6 +33,28 @@ def main():
     # 目的：下載並轉換 Fashion-MNIST 資料集，拆分為訓練集與驗證集。
     # 最佳實踐是：訓練和測試都用相同 mean/std
     # 前處理
+    
+    # 先下載資料集
+    # dataset 每筆都是 (影像 tensor, 標籤 int)
+    dataset = datasets.FashionMNIST(root="./data", train=True, download=True, transform=transforms.ToTensor())
+
+    # 將所有影像堆疊成一個 tensor
+    # 這段會做的事情是：
+    # 逐筆取出 dataset 中的 (img, label)
+    # 只保留影像 img，忽略 _（底線代表「我不需要這個變數」）
+    # 最後會產生一個 list，裡面放了 60,000 個影像 tensor
+    imgs = torch.stack([img for img, _ in dataset])  # shape: [60000, 1, 28, 28]
+    print(imgs.shape)
+
+    # 計算 mean & std
+    mean = imgs.mean().item()
+    std = imgs.std().item()
+
+    print("mean =", mean)
+    print("std =", std)
+    
+    # transforms.Normalize((0.2861,), (0.3530,))
+    # 是針對 每個「通道 channel」 做正規化，
     tfm = transforms.Compose([transforms.ToTensor(),
                         transforms.Normalize((0.2861,),(0.3530,))])
     # print('tfm',tfm)
@@ -48,9 +70,16 @@ def main():
     print('第一筆資料的label',label)
 
 
-    val_len = 10000
-    train_len = len(full_train) - val_len
-    train_set,val_set=random_split(full_train,[train_len,val_len])
+    # 2️⃣ 設定比例
+    train_ratio = 0.8
+    val_ratio = 0.2
+
+    # 3️⃣ 計算實際長度（筆數）
+    train_len = int(len(full_train) * train_ratio)
+    val_len = len(full_train) - train_len
+
+    # 4️⃣ 隨機切分
+    train_set, val_set = random_split(full_train, [train_len, val_len])
 
 
 
@@ -105,6 +134,7 @@ def main():
             # Forward
             logits=model(images) # 模型輸出 [batch, 10] 輸出的「原始分數」logits 是模型最後一層（通常是全連接層 Linear）的原始輸出值，還 沒經過 softmax 或 sigmoid 等歸一化處理
             # 注意：CrossEntropyLoss 的預設行為是 回傳這個 batch 的平均 loss（不是總和）
+            # Cross-Entropy Loss 中 PyTorch 會自動幫你做 softmax，不用自己加
             loss=criterion(logits,labels) # 計算損失 (未 softmax) 
             
             # Backward
@@ -117,7 +147,7 @@ def main():
             running_loss += loss.item()*batch_size #running_loss是「紀錄」用
             n+=batch_size
             
-            #累計正確率
+            #計算這一批（batch）中有幾筆分類正確
             # argmax=在「類別維度」上找出分數最高的索引 如:tensor([0, 1, 0])
             # logits.argmax(1) == labels 如:tensor([True, False, True, True])
             # .item() 用意回傳一個float(非tensor格式)

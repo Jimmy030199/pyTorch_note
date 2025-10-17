@@ -14,8 +14,8 @@ class CNN(nn.Module):
         super().__init__()
         self.features =nn.Sequential(
             # nn.Conv2d(輸入通道數（灰階圖片只有 1 個 channel）, 要產生的輸出通道數, kernel_size, padding)
-            nn.Conv2d(1,32,kernel_size=3,padding=1),# 輸入: 1 通道 (灰階) -> 32 feature maps
-            nn.BatchNorm2d(32),
+            nn.Conv2d(1,32,kernel_size=3,padding=1),# 輸入: 1 通道 (灰階) (1, 28, 28)-> 32 feature maps (32, 28, 28)
+            nn.BatchNorm2d(32), #對剛剛產生的 32 個特徵圖 進行「批次正規化 (Batch Normalization)」
             nn.ReLU(inplace=True),
             nn.Conv2d(32,32,kernel_size=3,padding=1),# 再接一層 conv
             nn.ReLU(inplace=True),

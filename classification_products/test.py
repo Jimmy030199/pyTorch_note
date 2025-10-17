@@ -150,7 +150,9 @@ def main():
             logits=model(img_t.unsqueeze(0).to(device))
 
             # 轉成「每一類的機率分布」，讓我們可以看出模型信心
-            prob = F.softmax(logits,dim=1)[0] #[0]因為 長[[2.3, -0.8, 0.5, 1.1, -0.3, -1.7....]]
+            # dim=0在 batch 維度上做
+            # dim=1 在類別維度上做
+            prob = F.softmax(logits,dim=1)[0] #[0]因為 長[[0.7054, 0.2369, 0.0577.......]]
             prob_id= int(torch.argmax(prob).item())
             conf = float(prob[prob_id].item())
 

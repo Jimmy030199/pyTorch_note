@@ -22,6 +22,7 @@ os.makedirs(ARTIFACTS,exist_ok=True)
 
 # 資料統計摘要顯示函式
 # 主要用來 快速觀察每個特徵的平均值與標準差（std）
+# X 是一個 NumPy 陣列
 def describe_stats(X:np.ndarray,names:List[str],title:str):
     # np.ndarray 是 NumPy 的「多維陣列（矩陣）」資料結構。
 
