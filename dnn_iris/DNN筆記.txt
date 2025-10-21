@@ -1,0 +1,45 @@
+dnn.py
+
+(1) 載入與探索資料
+        │
+        ▼
+(2) 切分 Train / Val / Test
+        │
+        ▼
+(3) 標準化 + 儲存 npz, scaler
+        │
+        ▼
+(4) 轉 Tensor + DataLoader 預覽
+        │
+        ▼
+(5) 定義 MLP 模型 + 輸出架構
+        │
+        ▼
+(6) 訓練 (含早停)
+        │
+        ▼
+(7) 畫圖
+        │
+        ▼
+(8) 用測試集模擬
+       
+
+
+
+model.py
+Input (4)
+ ↓
+Linear(4 → 64)
+ ↓
+ReLU
+ ↓
+Dropout(0.2)
+ ↓
+Linear(64 → 32)
+ ↓
+ReLU
+ ↓
+Dropout(0.2)
+ ↓
+Linear(32 → 3)
+

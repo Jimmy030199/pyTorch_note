@@ -1,0 +1,34 @@
+train_regression.py
+[讀取CSV] → [資料轉Tensor] → [建立模型與設定]
+      ↓
+  [訓練(50回合)]
+      ↓
+ [Loss曲線輸出]
+      ↓
+ [模型推論與評估]
+      ↓
+ [輸出CSV結果 + 可視化圖像]
+
+
+model.py
+模型結構圖解:
+
+(1) 呼叫 model(x)
+ ↓
+(2) PyTorch 自動呼叫 model.forward(x)
+ ↓
+(3) forward() 裡執行 self.lin(x)
+ ↓
+(4) nn.Linear(1, 2) 做出線性轉換：
+     y = x @ Wᵀ + b
+ ↓
+(5) 輸出結果 tensor([[...], [...]])
+
+
+y=xWT+b
+模型初始參數（隨機產生)
+ex:
+W = [[0.45],
+     [-0.32]]
+b = [0.10, 0.05]
+
